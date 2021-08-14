@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+         #
+#    By: vscode <vscode@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/23 13:46:17 by alagroy-          #+#    #+#              #
-#    Updated: 2021/05/12 13:35:12 by alagroy-         ###   ########.fr        #
+#    Updated: 2021/08/14 13:11:21 by vscode           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = project_name
+NAME = Durex
 
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -g #-fsanitize=address
@@ -26,7 +26,7 @@ LIBFT = $(LIB_DIR)libft.a
 SRC_FILES = main.c 
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS = $(addprefix $(OBJS_DIR), $(OBJ_FILES))
-HEADERS = $(INCLUDES_DIR)project_name.h
+HEADERS = $(INCLUDES_DIR)durex.h
 
 all: $(OBJS_DIR) $(NAME)
 
