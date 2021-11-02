@@ -6,13 +6,13 @@
 /*   By: vscode <vscode@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/14 17:29:19 by vscode            #+#    #+#             */
-/*   Updated: 2021/08/14 17:29:49 by vscode           ###   ########.fr       */
+/*   Updated: 2021/10/25 11:11:27 by vscode           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DUREX_H
 # define DUREX_H
 
-#include "libft.h"
+#include <stdio.h>
 
 #endif
