@@ -6,7 +6,7 @@
 #    By: vscode <vscode@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/23 13:46:17 by alagroy-          #+#    #+#              #
-#    Updated: 2021/11/02 14:53:04 by vscode           ###   ########.fr        #
+#    Updated: 2021/11/04 18:26:59 by vscode           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ OBJS_DIR = ./.objs/
 SRC_FILES = main.c 
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS = $(addprefix $(OBJS_DIR), $(OBJ_FILES))
-SRC_SERVICE = service.s
+SRC_SERVICE = service.s server.s auth.s shell.s
 OBJ_SERVICE = $(SRC_SERVICE:.s=.o)
 OBJS_SERVICE = $(addprefix $(OBJS_DIR), $(OBJ_SERVICE))
 HEADERS = $(INCLUDES_DIR)durex.h
@@ -37,7 +37,7 @@ $(NAME): $(OBJS)
 	printf "\n\033[0;32m[$(NAME)] Linking [OK]\n\033[0;0m"
 
 service: $(OBJS_SERVICE)
-	ld -s -o service $(OBJS_SERVICE)
+	ld -o service $(OBJS_SERVICE) # -s
 	printf "\n\033[0;32m[service] Linking [OK]\n\033[0;0m"
 
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c $(HEADERS) Makefile
