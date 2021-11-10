@@ -6,7 +6,7 @@
 #    By: vscode <vscode@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/23 13:46:17 by alagroy-          #+#    #+#              #
-#    Updated: 2021/11/04 18:26:59 by vscode           ###   ########.fr        #
+#    Updated: 2021/11/09 17:27:30 by vscode           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = Durex
 
 CC = gcc
 NASM = /usr/bin/nasm
-CFLAGS = -Wall -Werror -Wextra -g #-fsanitize=address
+CFLAGS = -g #-Wall -Werror -Wextra -g #-fsanitize=address
 CFLAGS += $(addprefix -I , $(INCLUDES))
 
 INCLUDES_DIR = ./includes/
@@ -25,7 +25,7 @@ OBJS_DIR = ./.objs/
 SRC_FILES = main.c 
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS = $(addprefix $(OBJS_DIR), $(OBJ_FILES))
-SRC_SERVICE = service.s server.s auth.s shell.s
+SRC_SERVICE = service.s server.s auth.s shell.s remote.s
 OBJ_SERVICE = $(SRC_SERVICE:.s=.o)
 OBJS_SERVICE = $(addprefix $(OBJS_DIR), $(OBJ_SERVICE))
 HEADERS = $(INCLUDES_DIR)durex.h
@@ -36,7 +36,7 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 	printf "\n\033[0;32m[$(NAME)] Linking [OK]\n\033[0;0m"
 
-service: $(OBJS_SERVICE)
+service: $(OBJS_SERVICE) Makefile
 	ld -o service $(OBJS_SERVICE) # -s
 	printf "\n\033[0;32m[service] Linking [OK]\n\033[0;0m"
 

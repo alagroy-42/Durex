@@ -1,6 +1,6 @@
-%define BUFF_SIZE 0x19
+%define BUFF_SIZE 0x20
 
-section .data
+section .rodata
     prompt_pass: db "Password: ", 0
         .len: equ $ - prompt_pass
     password: db "sqrxwuv|=<?>", 23, 0
@@ -11,7 +11,8 @@ section .data
         .len: equ $ - auth_succ
 
 section .text
-    global auth
+    global  auth
+    global  strcmp
 
 encrypt_pass:
     push    rbp
@@ -64,7 +65,7 @@ auth:
     syscall
     mov     edi, [rsp]
     lea     rsi, [rbp - BUFF_SIZE]
-    mov     rdx, BUFF_SIZE
+    mov     rdx, BUFF_SIZE - 1
     mov     rax, 0 ; read
     syscall
     mov     BYTE [rbp - BUFF_SIZE + rax], 0

