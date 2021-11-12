@@ -53,4 +53,7 @@ dkms.conf
 
 install.sh
 Durex
+.vscode
+.gdb_history
+peda-session-service.txt
 service

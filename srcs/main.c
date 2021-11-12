@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vscode <vscode@student.42.fr>              +#+  +:+       +#+        */
+/*   By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/14 17:28:28 by vscode            #+#    #+#             */
-/*   Updated: 2021/08/14 17:30:15 by vscode           ###   ########.fr       */
+/*   Updated: 2021/11/12 09:14:30 by alagroy-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 int     main(void)
 {
-    ft_putendl("alagroy-");
+    puts("alagroy-");
     return (0);
 }
