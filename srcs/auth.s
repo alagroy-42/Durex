@@ -15,8 +15,6 @@ section .text
     global  strcmp
 
 encrypt_pass:
-    push    rbp
-    mov     rbp, rsp
     xor     rbx, rbx
 crypt:
     mov     al, [rdi]
@@ -27,13 +25,9 @@ crypt:
     inc     rdi
     jmp     crypt
 end_crypt:
-    leave
     ret
 
 strcmp:
-    push    rbp
-    mov     rbp, rsp
-compare:
     mov     al, [rdi]
     mov     bl, [rsi]
     cmp     al, bl
@@ -41,13 +35,13 @@ compare:
     inc     rdi
     inc     rsi
     cmp     al, 0
-    jne     compare
-    mov     rax, 0
+    jne     strcmp
+    xor     al, al
     jmp     endcmp
 nequ:
-    mov     rax, 1
+    xor     al, al
+    add     al, 1
 endcmp:
-    leave
     ret
 
 auth:
@@ -55,42 +49,48 @@ auth:
     mov     rbp, rsp
     sub     rsp, BUFF_SIZE + 0x10
     mov     DWORD [rsp], edi
-    mov     QWORD [rbp - 0x8], 0
-    mov     QWORD [rbp - 0x10], 0
-    mov     QWORD [rbp - 0x18], 0
-    mov     QWORD [rbp - 0x20], 0
+    xor     rax, rax
+    mov     QWORD [rbp - 0x8], rax
+    mov     QWORD [rbp - 0x10], rax
+    mov     QWORD [rbp - 0x18], rax
+    mov     QWORD [rbp - 0x20], rax
     lea     rsi, [rel prompt_pass]
     mov     rdx, prompt_pass.len
-    mov     rax, 0x1 ; write
+    add     al, 0x1 ; write
     syscall
     mov     edi, [rsp]
     lea     rsi, [rbp - BUFF_SIZE]
-    mov     rdx, BUFF_SIZE - 1
-    mov     rax, 0 ; read
+    xor     edx, edx
+    add     edx, BUFF_SIZE - 1
+    xor     eax, eax ; read
     syscall
-    mov     BYTE [rbp - BUFF_SIZE + rax], 0
+    xor     dl, dl
+    mov     BYTE [rbp - BUFF_SIZE + rax], dl
     mov     r8, rax
     lea     rdi, [rbp - BUFF_SIZE]
     call    encrypt_pass
     lea     rdi, [rbp - BUFF_SIZE]
     lea     rsi, [rel password]
     call    strcmp
-    cmp     rax, 0
+    cmp     eax, 0
     jne     denied
     mov     edi, [rsp]
     lea     rsi, [rel auth_succ]
-    mov     rdx, auth_succ.len
-    mov     rax, 0x1 ; write
+    mov     edx, auth_succ.len
+    xor     eax, eax
+    add     eax, 0x1 ; write
     syscall
-    mov     rax, 0x0
+    xor     eax, eax
     jmp     end_auth
 denied:
     mov     edi, [rsp]
     lea     rsi, [rel auth_den]
     mov     rdx, auth_den.len
-    mov     rax, 0x1 ; write
+    xor     eax, eax
+    add     eax, 0x1 ; write
     syscall
-    mov     rax, 0x1
+    xor     eax, eax
+    add     eax, 0x1
 end_auth:
     leave
     ret

