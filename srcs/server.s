@@ -1,20 +1,20 @@
 BITS 64
 
 section .data
-    client_fd   dd 0
-    sock_fd     dd 0
-    serv:
-        family      dw 0
-        port        dw 0
-        addr        dd 0
-        zero        dq 0
-        servlen     equ $ - serv
-    client:
-        cfamily      dw 0
-        cport        dw 0
-        caddr        dd 0
-        czero        dq 0
-        clen         dd 0
+    extern client_fd
+    extern sock_fd
+    extern serv
+    extern family
+    extern port
+    extern addr
+    extern zero
+    extern servlen
+    extern client
+    extern cfamily
+    extern cport
+    extern caddr
+    extern czero
+    extern clen
 
 
 
@@ -22,7 +22,6 @@ section .text
     global  create_server
     global  loop_server
     extern  shell_mode
-    extern  sleep
     extern  auth
 
 create_server:

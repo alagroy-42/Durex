@@ -1,5 +1,21 @@
+BITS 64
+
 section .data
     extern  shell_port
+    global client_fd
+    global sock_fd
+    global serv
+    global family
+    global port
+    global addr
+    global zero
+    global servlen
+    global client
+    global cfamily
+    global cport
+    global caddr
+    global czero
+    global clen
     client_fd   dd 0
     sock_fd     dd 0
     serv:

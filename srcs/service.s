@@ -10,7 +10,6 @@ section .rodata
 
 section .text
     global _start
-    global sleep
     extern create_server
     extern loop_server
 

