@@ -6,7 +6,7 @@
 #    By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/23 13:46:17 by alagroy-          #+#    #+#              #
-#    Updated: 2021/11/24 09:13:48 by alagroy-         ###   ########.fr        #
+#    Updated: 2021/11/25 11:29:56 by alagroy-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ SRC_FILES = main.c
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS = $(addprefix $(OBJS_DIR), $(OBJ_FILES))
 SRC_SERVICE = service.s server.s auth.s shell.s remote.s
+SRCS_SERVICE = $(addprefix $(SRCS_DIR), $(SRC_SERVICE))
 OBJ_SERVICE = $(SRC_SERVICE:.s=.o)
 OBJS_SERVICE = $(addprefix $(OBJS_DIR), $(OBJ_SERVICE))
 HEADERS = $(INCLUDES_DIR)durex.h
@@ -40,16 +41,19 @@ service: $(OBJS_SERVICE) Makefile
 	ld -o service $(OBJS_SERVICE) # -s
 	printf "\n\033[0;32m[service] Linking [OK]\n\033[0;0m"
 
-tiny:
-	./scripts/tiny.py $(SRC_SERVICE)
+tiny_service: $(SRCS_SERVICE)
+	./scripts/tiny.py $(SRCS_SERVICE)
+	printf "\033[0;32m[service] Tinying [OK]\n\033[0;0m"
+	$(NASM) -f bin -o tiny_service $(SRCS_DIR)tiny.s
+	printf "\033[0;32m[service] Tiny compiled [OK]\n\033[0;0m"
+
 
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c $(HEADERS) Makefile
 	$(CC) $(CFLAGS) -o $@ -c $<
 	printf "\033[0;32m[$(NAME)] Compilation [$<]                 \r\033[0m"
 
-$(OBJS_DIR)%.o: $(SRCS_DIR)%.s Makefile
+$(OBJS_DIR)%.o: $(SRC_SERVICE) Makefile
 	$(NASM) -f elf64 -o $@ $<
-
 	printf "\033[0;32m[$(NAME)] Compilation [$<]                 \r\033[0m"
 
 $(OBJS_DIR):

