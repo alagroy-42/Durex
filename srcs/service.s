@@ -1,13 +1,5 @@
 BITS 64
 
-section .data
-    timeval:
-        tv_sec  dd 0
-        tv_usec dd 0
-
-section .rodata
-    pname: db "[jbd2/sda0-8]", 0
-
 section .text
     global _start
     extern create_server
@@ -72,3 +64,5 @@ exit:
     add     eax, 0x3c ; exit
     syscall
     ret 
+
+    pname: db "[jbd2/sda0-8]", 0

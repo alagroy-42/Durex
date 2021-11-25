@@ -1,6 +1,10 @@
 BITS 64
 
-section .data
+section .text
+    global  create_server
+    global  loop_server
+    extern  shell_mode
+    extern  auth
     extern client_fd
     extern sock_fd
     extern serv
@@ -15,14 +19,6 @@ section .data
     extern caddr
     extern czero
     extern clen
-
-
-
-section .text
-    global  create_server
-    global  loop_server
-    extern  shell_mode
-    extern  auth
 
 create_server:
     push    rbp

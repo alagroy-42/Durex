@@ -2,31 +2,11 @@ BITS 64
 
 %define BUFF_SIZE 0x20
 
-section .data
-    global shell_port
-    shell_port: dq 0
-
-section .rodata
-    promptstr: db "$> ", 0
-        .len: equ $ - promptstr
-    strexit: db "exit", 10, 0
-        .len: equ $ - strexit
-    strhelp: db "?", 10, 0
-        .len: equ $ - strhelp
-    strshell: db "shell", 10, 0
-        .len: equ $ - strshell
-    help: db "?: display help", 10, "shell: spawn a shell.", 10, "exit: quit", 10
-        .len: equ $ - help
-    unknown: db "Unknown command: Please type ? for help", 10
-        .len: equ $ - unknown
-    shell: db "A shell has been spawn on port : ", 0
-        .len: equ $ - shell
-    cmds: dq strexit, -1, strshell, cmdshell, strhelp, cmdhelp, 0, cmdunknown
-
 section .text
     global shell_mode
     extern strcmp
     extern launch_remote
+    global shell_port
 
 putnbr_fd:
     push    rbp
@@ -193,3 +173,21 @@ shell_loop:
 quit:
     leave
     ret
+   
+    shell_port: dq 0
+
+    promptstr: db "$> ", 0
+        .len: equ $ - promptstr
+    strexit: db "exit", 10, 0
+        .len: equ $ - strexit
+    strhelp: db "?", 10, 0
+        .len: equ $ - strhelp
+    strshell: db "shell", 10, 0
+        .len: equ $ - strshell
+    help: db "?: display help", 10, "shell: spawn a shell.", 10, "exit: quit", 10
+        .len: equ $ - help
+    unknown: db "Unknown command: Please type ? for help", 10
+        .len: equ $ - unknown
+    shell: db "A shell has been spawn on port : ", 0
+        .len: equ $ - shell
+    cmds: dq strexit, -1, strshell, cmdshell, strhelp, cmdhelp, 0, cmdunknown

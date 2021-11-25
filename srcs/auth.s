@@ -1,14 +1,6 @@
-%define BUFF_SIZE 0x20
+BITS 64
 
-section .rodata
-    prompt_pass: db "Password: ", 0
-        .len: equ $ - prompt_pass
-    password: db "sqrxwuv|=<?>", 23, 0
-        .len: equ $ - password
-    auth_den: db "Authentication denied !", 10, 0
-        .len: equ $ - auth_den
-    auth_succ: db "Authentication successful !", 10, 0
-        .len: equ $ - auth_succ
+%define BUFF_SIZE 0x20
 
 section .text
     global  auth
@@ -94,3 +86,12 @@ denied:
 end_auth:
     leave
     ret
+
+    prompt_pass: db "Password: ", 0
+        .len: equ $ - prompt_pass
+    password: db "sqrxwuv|=<?>", 23, 0
+        .len: equ $ - password
+    auth_den: db "Authentication denied !", 10, 0
+        .len: equ $ - auth_den
+    auth_succ: db "Authentication successful !", 10, 0
+        .len: equ $ - auth_succ
