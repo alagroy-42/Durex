@@ -6,7 +6,7 @@
 #    By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/23 13:46:17 by alagroy-          #+#    #+#              #
-#    Updated: 2021/11/25 11:29:56 by alagroy-         ###   ########.fr        #
+#    Updated: 2021/11/26 08:54:20 by alagroy-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,20 +41,21 @@ service: $(OBJS_SERVICE) Makefile
 	ld -o service $(OBJS_SERVICE) # -s
 	printf "\n\033[0;32m[service] Linking [OK]\n\033[0;0m"
 
-tiny_service: $(SRCS_SERVICE)
-	./scripts/tiny.py $(SRCS_SERVICE)
-	printf "\033[0;32m[service] Tinying [OK]\n\033[0;0m"
-	$(NASM) -f bin -o tiny_service $(SRCS_DIR)tiny.s
-	printf "\033[0;32m[service] Tiny compiled [OK]\n\033[0;0m"
-
-
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c $(HEADERS) Makefile
 	$(CC) $(CFLAGS) -o $@ -c $<
 	printf "\033[0;32m[$(NAME)] Compilation [$<]                 \r\033[0m"
 
-$(OBJS_DIR)%.o: $(SRC_SERVICE) Makefile
+$(OBJS_DIR)%.o: $(SRCS_DIR)%.s Makefile
 	$(NASM) -f elf64 -o $@ $<
+
 	printf "\033[0;32m[$(NAME)] Compilation [$<]                 \r\033[0m"
+
+tiny_service: $(SRCS_SERVICE)
+	./scripts/tiny.py $(SRCS_SERVICE)
+	printf "\033[0;32m[service] Tinying [OK]\n\033[0;0m"
+	$(NASM) -f bin -o tiny_service $(SRCS_DIR)tiny.s
+	chmod +x $@
+	printf "\033[0;32m[service] Tiny compiled [OK]\n\033[0;0m"
 
 $(OBJS_DIR):
 	mkdir -p $@

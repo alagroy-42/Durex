@@ -32,6 +32,7 @@ _start:
     syscall
     cmp     eax, 0
     jne     exit
+    mov     rdi, DWORD 37392
     call    create_server
     xor     eax, eax
     add     eax, 0x39 ; fork

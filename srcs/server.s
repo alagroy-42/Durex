@@ -19,10 +19,12 @@ section .text
     global caddr
     global czero
     global clen
+    global create_server
 
-create_server:
+create_server: ; (rdi = htons(port))
     push    rbp
     mov     rbp, rsp
+    push    rdi
     xor     edx, edx ; IP
     xor     edi, edi
     xor     esi, esi
@@ -31,19 +33,21 @@ create_server:
     add     eax, 0x29 ; socket
     syscall
     mov     [sock_fd], eax
-    mov     edi, [sock_fd]
+    mov     edi, eax
     xor     esi, esi
     xor     edx, edx
-    add     rsi, 1
-    add     rdx, 2 ; SO_REUSEADDRESS
+    add     esi, 1
+    add     edx, 2 ; SO_REUSEADDRESS
     push    1
     lea     r10, [rsp]
-    mov     r8, 4
+    xor     r8, r8
+    add     r8, 4
     xor     eax, eax
     add     eax, 0x36 ; setsockopt
     syscall
     mov     [family], WORD 2 ; AF_INET
-    mov     [port], DWORD 37392 ; htons(4242);
+    mov     rdi, [rsp + 0x8]
+    mov     [port], edi
     mov     DWORD [addr], 0 ; htonl(INADDR_ANY)
     mov     edi, [sock_fd]
     lea     rsi, [rel serv]
