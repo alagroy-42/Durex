@@ -55,5 +55,7 @@ install.sh
 Durex
 .vscode
 .gdb_history
-peda-session-service.txt
+peda-session*
 service
+tiny_service
+srcs/tiny.s
