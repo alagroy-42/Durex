@@ -18,7 +18,7 @@ def obfuscate_xor(tiny):
     return xored
 
 def make_payload_file(payload):
-    return 'char *payload = "' + payload + '";'
+    return 'char *g_payload = "' + payload + '";\n'
 
 if __name__ == '__main__':
     tiny_file = './tiny_service'
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     tiny = filestream.read()
     filestream.close()
     xored = obfuscate_xor(tiny)
-    payload = urllib.parse.quote(xored)
+    payload = urllib.parse.quote(xored, encoding='cp1252', errors='replace')
     filestream = open(output_file, 'w')
     filestream.write(make_payload_file(payload))
     filestream.close()
