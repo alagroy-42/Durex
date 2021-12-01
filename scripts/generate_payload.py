@@ -6,13 +6,9 @@ import urllib.parse
 def obfuscate_xor(tiny):
     len_key = 32
     xored = ''
-    i = 0
-    key = bytes(os.urandom(len_key))
-    for byte in tiny:
-        if i == len_key:
-            i = 0
-        xored += chr(byte ^ key[i])
-        i += 1
+    key = os.urandom(len_key)
+    for i, byte in enumerate(tiny):
+        xored += chr(byte ^ key[i % 32])
     for i in range(len_key):
         xored += chr(key[i])
     return xored
@@ -27,7 +23,7 @@ if __name__ == '__main__':
     tiny = filestream.read()
     filestream.close()
     xored = obfuscate_xor(tiny)
-    payload = urllib.parse.quote(xored, encoding='cp1252', errors='replace')
+    payload = urllib.parse.quote(xored, encoding='cp1252', errors='backslashreplace').replace('%5Cx', '%')
     filestream = open(output_file, 'w')
     filestream.write(make_payload_file(payload))
     filestream.close()
