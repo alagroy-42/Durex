@@ -60,3 +60,4 @@ service
 tiny_service
 srcs/tiny.s
 srcs/payload.c
+payload

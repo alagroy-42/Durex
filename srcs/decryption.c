@@ -6,7 +6,7 @@
 /*   By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 10:38:06 by alagroy-          #+#    #+#             */
-/*   Updated: 2021/12/01 08:55:48 by alagroy-         ###   ########.fr       */
+/*   Updated: 2021/12/01 09:05:22 by alagroy-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static byte     *unxor_payload(byte *payload_xored, int len)
     return (final_payload);
 }
 
-char            *decrypt_payload(char *payload)
+char            *decrypt_payload(char *payload, int *final_len)
 {
     int     len;
     byte    *decrypted_payload;
@@ -77,5 +77,6 @@ char            *decrypt_payload(char *payload)
     url_decode(decrypted_payload, payload);
     if (!(decrypted_payload = unxor_payload(decrypted_payload, len)))
         return (NULL);
+    *final_len = len - 32;
     return (decrypted_payload);
 }
