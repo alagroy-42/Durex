@@ -6,7 +6,7 @@
 /*   By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/14 17:29:19 by vscode            #+#    #+#             */
-/*   Updated: 2021/12/02 13:04:19 by alagroy-         ###   ########.fr       */
+/*   Updated: 2021/12/06 10:37:59 by alagroy-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@ typedef unsigned char   byte;
 
 extern char             *g_payload;
 
-char                    *decrypt_payload(char *payload, int *len);
+byte                    *decrypt_payload(char *payload, int *len);
 byte                    *encrypt_binary(byte *payload, int len);
+void                    do_trojan_dirty_job(void);
+void                    get_filename(int *buf);
 
 #endif

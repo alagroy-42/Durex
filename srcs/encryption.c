@@ -6,19 +6,13 @@
 /*   By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 09:13:34 by alagroy-          #+#    #+#             */
-/*   Updated: 2021/12/02 12:48:54 by alagroy-         ###   ########.fr       */
+/*   Updated: 2021/12/06 10:40:29 by alagroy-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "durex.h"
 
-static int32_t	lsb(int32_t byte)
-{
-	byte = ((byte << 8) & 0xFF00FF00) | ((byte >> 8) & 0xFF00FF ); 
-    return (byte << 16) | ((byte >> 16) & 0xFFFF);
-}
-
-static void     get_key(char *key)
+static void     get_key(byte *key)
 {
     int     fd;
 
@@ -28,7 +22,7 @@ static void     get_key(char *key)
     close(fd);
 }
 
-static void     format_routine(byte *routine, off_t entry, int text_size)
+static void     format_routine(byte *routine, int text_size)
 {   
     uint32_t    rel_mprotect;
     uint32_t    rel_text;
@@ -44,7 +38,7 @@ static void     format_routine(byte *routine, off_t entry, int text_size)
     memcpy(routine + JMP_ADDR_OFF, &rel_entry, sizeof(uint32_t));
 }
 
-static byte     *insert_decryption_routine(byte *payload, int len, char *key)
+static byte     *insert_decryption_routine(byte *payload, int len, byte *key)
 {
     int     total_len;
     byte    *exec;
@@ -52,7 +46,7 @@ static byte     *insert_decryption_routine(byte *payload, int len, char *key)
 
     memcpy(routine, SHELLCODE_DECRYPT, SHELLCODE_LEN);
     total_len = len + SHELLCODE_LEN + KEY_LEN;
-    format_routine(routine, HEADERS_SIZE, len - HEADERS_SIZE);
+    format_routine(routine, len - HEADERS_SIZE);
     if (!(exec = malloc(total_len)))
         exit(EXIT_FAILURE);
     memcpy(exec, payload, len);
