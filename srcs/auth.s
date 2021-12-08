@@ -48,7 +48,7 @@ auth:
     mov     QWORD [rbp - 0x20], rax
     lea     rsi, [rel prompt_pass]
     mov     rdx, prompt_pass.len
-    add     al, 0x1 ; write
+    inc     eax ; write
     syscall
     mov     edi, [rsp]
     lea     rsi, [rbp - BUFF_SIZE]
@@ -70,7 +70,7 @@ auth:
     lea     rsi, [rel auth_succ]
     mov     edx, auth_succ.len
     xor     eax, eax
-    add     eax, 0x1 ; write
+    inc     eax ; write
     syscall
     xor     eax, eax
     jmp     end_auth
@@ -79,10 +79,10 @@ denied:
     lea     rsi, [rel auth_den]
     mov     rdx, auth_den.len
     xor     eax, eax
-    add     eax, 0x1 ; write
+    inc     eax ; write
     syscall
     xor     eax, eax
-    add     eax, 0x1
+    inc     eax
 end_auth:
     leave
     ret

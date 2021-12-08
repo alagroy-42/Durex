@@ -29,7 +29,6 @@ launch_remote:
     xor     eax, eax
     add     eax, 0x33 ; getsockname
     syscall
-    ; ecrire le port dans la globale
     xor     eax, eax
     add     eax, 0x39 ; fork
     syscall
@@ -37,7 +36,6 @@ launch_remote:
     je      child
     xor     edi, edi
     xor     eax, eax
-    add     edi, 0
     add     eax, 0x3c ; exit
     syscall
 child:

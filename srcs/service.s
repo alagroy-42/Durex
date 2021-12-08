@@ -78,8 +78,8 @@ check_instance:
     xor     rdx, rdx
     xor     rax, rax
     lea     rdi, [rel lock_name]
-    add     esi, 2 | 0100 ; O_RDWR | O_CREAT
-    add     edx, 0600
+    add     esi, 2 | 100o ; O_RDWR | O_CREAT
+    add     edx, 600o
     add     eax, 0x02 ; open
     syscall
     mov     edx, eax

