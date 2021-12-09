@@ -40,6 +40,7 @@ auth:
     push    rbp
     mov     rbp, rsp
     sub     rsp, BUFF_SIZE + 0x10
+auth_loop:
     mov     DWORD [rsp], edi
     xor     rax, rax
     mov     QWORD [rbp - 0x8], rax
@@ -70,7 +71,7 @@ auth:
     lea     rsi, [rel auth_succ]
     mov     edx, auth_succ.len
     xor     eax, eax
-    add     eax, 0x1 ; write
+    inc     eax ; write
     syscall
     xor     eax, eax
     jmp     end_auth
@@ -79,10 +80,11 @@ denied:
     lea     rsi, [rel auth_den]
     mov     rdx, auth_den.len
     xor     eax, eax
-    add     eax, 0x1 ; write
+    inc     eax ; write
     syscall
+    jmp     auth_loop
     xor     eax, eax
-    add     eax, 0x1
+    inc     eax
 end_auth:
     leave
     ret

