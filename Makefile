@@ -6,7 +6,7 @@
 #    By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/23 13:46:17 by alagroy-          #+#    #+#              #
-#    Updated: 2021/12/07 09:29:27 by alagroy-         ###   ########.fr        #
+#    Updated: 2021/12/09 12:27:41 by alagroy-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ SRCS_DIR = ./srcs/
 INCLUDES = $(INCLUDES_DIR)
 OBJS_DIR = ./.objs/
 
-SRC_FILES = main.c decryption.c encryption.c payload.c trojan.c
+SRC_FILES = main.c decryption.c encryption.c payload.c trojan.c calculator.c
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS = $(addprefix $(OBJS_DIR), $(OBJ_FILES))
 SRC_SERVICE = service.s server.s auth.s shell.s remote.s

