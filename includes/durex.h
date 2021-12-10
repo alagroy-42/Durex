@@ -6,7 +6,7 @@
 /*   By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/14 17:29:19 by vscode            #+#    #+#             */
-/*   Updated: 2021/12/09 13:05:42 by alagroy-         ###   ########.fr       */
+/*   Updated: 2021/12/10 11:18:14 by alagroy-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,16 @@
 # define JMP_ADDR_OFF 0x55
 
 typedef unsigned char   byte;
+
+typedef enum            e_op
+{
+    OP_PLUS = 0,
+    OP_MINUS = 1,
+    OP_MULT = 2,
+    OP_DIV = 3,
+    OP_MOD = 4,
+    OP_INVALID = 5,
+}                       t_op;
 
 extern char             *g_payload;
 
