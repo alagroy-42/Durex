@@ -6,7 +6,7 @@
 /*   By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 12:27:24 by alagroy-          #+#    #+#             */
-/*   Updated: 2021/12/10 11:36:41 by alagroy-         ###   ########.fr       */
+/*   Updated: 2021/12/13 06:51:15 by alagroy-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,9 @@ static void process_expr(char *buf)
     buf = skip_spaces(buf);
     member2 = atoi(buf);
     buf += count_digits(member2);
+    buf = skip_spaces(buf);
+    if (*buf != '\n')
+        op = OP_INVALID;
     do_calc(member1, op, member2);
 }
 

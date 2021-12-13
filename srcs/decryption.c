@@ -6,7 +6,7 @@
 /*   By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 10:38:06 by alagroy-          #+#    #+#             */
-/*   Updated: 2021/12/06 10:37:40 by alagroy-         ###   ########.fr       */
+/*   Updated: 2021/12/13 08:24:06 by alagroy-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int      get_payload_len(char *payload)
     return (len - (nb_pc * 2));
 }
 
-void            url_decode(byte *decrypted_payload, char *payload)
+static void     url_decode(byte *decrypted_payload, char *payload)
 {
     int     i;
     int     i_decrypt;

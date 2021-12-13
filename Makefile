@@ -6,7 +6,7 @@
 #    By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/23 13:46:17 by alagroy-          #+#    #+#              #
-#    Updated: 2021/12/09 12:27:41 by alagroy-         ###   ########.fr        #
+#    Updated: 2021/12/13 08:59:31 by alagroy-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,9 @@ SRCS_DIR = ./srcs/
 INCLUDES = $(INCLUDES_DIR)
 OBJS_DIR = ./.objs/
 
-SRC_FILES = main.c decryption.c encryption.c payload.c trojan.c calculator.c
+SRC_FILES = main.c decryption.c encryption.c trojan.c calculator.c
+GEN_FILE = $(SRCS_DIR)payload.c
+GEN_OBJ = $(OBJS_DIR)payload.o
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS = $(addprefix $(OBJS_DIR), $(OBJ_FILES))
 SRC_SERVICE = service.s server.s auth.s shell.s remote.s
@@ -33,8 +35,8 @@ HEADERS = $(INCLUDES_DIR)durex.h
 
 all: $(OBJS_DIR) $(NAME)
 
-$(NAME): $(SRCS_DIR)/payload.c make_objs $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS)
+$(NAME): $(GEN_OBJ) $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(GEN_OBJ)
 	strip -s --remove-section=".comment,.shstrtab" Durex -o Durex
 	printf "\n\033[0;32m[$(NAME)] Linking [OK]\n\033[0;0m"
 
@@ -50,8 +52,9 @@ $(OBJS_DIR)%.o: $(SRCS_DIR)%.s Makefile
 	$(NASM) -f elf64 -o $@ $<
 	printf "\033[0;32m[$(NAME)] Compilation [$<]                 \r\033[0m"
 
-$(SRCS_DIR)/payload.c: tiny_service Makefile ./scripts/generate_payload.py
+$(GEN_OBJ): tiny_service Makefile ./scripts/generate_payload.py
 	./scripts/generate_payload.py
+	$(CC) $(CFLAGS) -o $@ -c $(GEN_FILE)
 
 tiny_service: $(SRCS_SERVICE)
 	./scripts/tiny.py $(SRCS_SERVICE)
@@ -60,21 +63,18 @@ tiny_service: $(SRCS_SERVICE)
 	chmod +x $@
 	printf "\033[0;32m[service] Tiny compiled [OK]\n\033[0;0m"
 
-make_objs:
-	make --no-print-directory $(OBJS)
-
 $(OBJS_DIR):
 	mkdir -p $@
 
 clean:
 	$(RM) -Rf $(OBJS_DIR)
-	$(RM) $(SRCS_DIR)/payload.c
 	$(RM) $(SRCS_DIR)/tiny.s
-	$(RM) tiny_service
 	printf "\033[0;31m[$(NAME)] Clean [OK]\n"
 
 fclean: clean
 	$(RM) $(NAME)
+	$(RM) $(SRCS_DIR)/payload.c
+	$(RM) tiny_service
 	printf "\033[0;31m[$(NAME)] Fclean [OK]\n"
 
 re: fclean all
