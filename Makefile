@@ -6,7 +6,7 @@
 #    By: alagroy- <alagroy-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/23 13:46:17 by alagroy-          #+#    #+#              #
-#    Updated: 2021/12/13 08:59:31 by alagroy-         ###   ########.fr        #
+#    Updated: 2021/12/13 10:38:00 by alagroy-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,6 +69,7 @@ $(OBJS_DIR):
 clean:
 	$(RM) -Rf $(OBJS_DIR)
 	$(RM) $(SRCS_DIR)/tiny.s
+	./scripts/clean_durex.sh
 	printf "\033[0;31m[$(NAME)] Clean [OK]\n"
 
 fclean: clean
