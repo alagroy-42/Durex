@@ -40,7 +40,7 @@ _start:
     jne     exit
     lea     rdi, [rel dir]
     xor     eax, eax
-    add     eax, 0x50
+    add     eax, 0x50 ; chdir
     syscall
     mov     rdi, DWORD 37392
     call    create_server

@@ -57,6 +57,8 @@ auth_loop:
     add     edx, BUFF_SIZE - 1
     xor     eax, eax ; read
     syscall
+    cmp     eax, 0
+    jle     returnctrlc
     xor     dl, dl
     mov     BYTE [rbp - BUFF_SIZE + rax], dl
     mov     r8, rax
@@ -83,6 +85,7 @@ denied:
     inc     eax ; write
     syscall
     jmp     auth_loop
+returnctrlc:
     xor     eax, eax
     inc     eax
 end_auth:

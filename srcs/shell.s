@@ -162,6 +162,8 @@ shell_loop:
     add     edx, BUFF_SIZE - 1
     xor     eax, eax ; read
     syscall
+    cmp     eax, 0
+    jle     quit
     mov     BYTE [rbp - BUFF_SIZE + rax], 0x0
     lea     rdi, [rbp - BUFF_SIZE]
     call    get_cmd
